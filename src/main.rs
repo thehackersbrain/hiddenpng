@@ -76,19 +76,20 @@ fn hide_data(image_file: &str, data: &[u8], key: &[u8]) -> Result<(), Box<dyn st
 
     let encrypted_data = encrypt(data, key);
 
-    if encrypted_data.len() >= image.len() {
-        return Err(Box::new(std::io::Error::new(std::io::ErrorKind::Other, "Data to be encrypted is larger than the image.")));
-    }
+    
 
     let data_len = std::cmp::min(encrypted_data.len(), image.len());
 
 
     let mut rng = rand::thread_rng();
     let offset = rng.gen_range(0..image.len());
+    if offset + encrypted_data.len() >= image.len() {
+        return Err(Box::new(std::io::Error::new(std::io::ErrorKind::Other, "Data to be encrypted is larger than the image.")));
+    }
 
     // Use the least significant bit of each pixel to store the encrypted data
     for (i, b) in encrypted_data.iter().enumerate() {
-        let pixel = (i * 8) + offset;
+        let pixel = (i * 4) + offset;
         let color_value = image[pixel];
         let new_color_value = color_value ^ (*b as u8);
         image[pixel] = new_color_value;
