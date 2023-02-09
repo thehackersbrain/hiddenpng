@@ -149,4 +149,5 @@ fn extract_data(image_file: &str, key: &[u8]) -> Result<Vec<u8>, Box<dyn std::er
 
 fn main() {
     hide_data("demo.png", b"secret message", b"hacker");
+    extract_data("demo.png", b"hacker");
 }
