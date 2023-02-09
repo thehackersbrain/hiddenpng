@@ -74,16 +74,13 @@ fn hide_data(image_file: &str, data: &[u8], key: &[u8]) -> Result<(), Box<dyn st
         Ok(_) => (),
     };
 
+    let original_image_len = image.len();
     let encrypted_data = encrypt(data, key);
-
-    
-
     let data_len = std::cmp::min(encrypted_data.len(), image.len());
-
 
     let mut rng = rand::thread_rng();
     let offset = rng.gen_range(0..image.len());
-    if offset + encrypted_data.len() >= image.len() {
+    if offset + encrypted_data.len() > image.len() {
         return Err(Box::new(std::io::Error::new(std::io::ErrorKind::Other, "Data to be encrypted is larger than the image.")));
     }
 
